@@ -1,0 +1,55 @@
+# Node
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build
+
+
+build/
+out/
+
+# TypeScript
+
+*.tsbuildinfo
+
+# Env
+
+.env
+.env.*
+!.env.example
+
+# Logs
+
+logs/
+*.log
+
+# OS
+
+.DS_Store
+Thumbs.db
+
+# Editor
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Coverage
+
+coverage/
+
+# Outputs (Ripley generated)
+
+outputs/
+SYSTEM_DEBUG.md
+progress.json
+
+# Misc
+
+.tmp/
+.cache/

@@ -1,0 +1,30 @@
+CLI (entry)
+  ↓
+Orchestrator (controls flow)
+  ↓
+Batch Manager (6–7 files)
+  ↓
+LLM Workers
+   ├── Contract Extractor
+   ├── Analyzer
+   ├── Fixer
+   └── Integrity Checker
+  ↓
+State Store (disk)
+   ├── SYSTEM_DEBUG.md
+   ├── deferred.json
+   ├── progress.json
+
+
+
+   Core Principles
+LLM = stateless
+Files = processed in batches
+State = always on disk
+Fixes = delayed + safe
+Context = rebuilt every batch
+
+Tech Stack
+Node.js + TypeScript
+File system (fs)
+OpenRouter (user API key)
