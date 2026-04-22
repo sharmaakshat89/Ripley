@@ -60,17 +60,17 @@ export async function runPipeline(): Promise<void> {
   let totalIssues = 0;
   let totalFixes = 0;
 
-  const deferredFile = path.join(cwd, 'outputs', 'deferred.json');
+  const issuesFile = path.join(cwd, 'outputs', 'issues.json');
 
-  if (fs.existsSync(deferredFile)) {
+  if (fs.existsSync(issuesFile)) {
     try {
-      const deferredData = JSON.parse(
-        fs.readFileSync(deferredFile, 'utf-8')
+      const issuesData = JSON.parse(
+        fs.readFileSync(issuesFile, 'utf-8')
       );
 
-      const issues = Array.isArray(deferredData)
-        ? deferredData
-        : deferredData.issues || [];
+      const issues = Array.isArray(issuesData)
+        ? issuesData
+        : issuesData.issues || [];
 
       totalIssues = issues.length;
       totalFixes = issues.filter((i: any) => i.status === 'resolved').length;

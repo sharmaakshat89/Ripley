@@ -3,6 +3,7 @@ import * as path from 'path';
 import { callLLM } from '../llm/client';
 import { appendFileAnalysis, markFileComplete } from '../state/debugWriter';
 import { updateProgress } from '../state/stateManager';
+import { fetchContext } from '../utils/speckitBridge';
 
 export async function analyzeBatch(files: string[]): Promise<void> {
   const outputDir = path.join(process.cwd(), 'outputs');
@@ -75,6 +76,9 @@ RULES:
 - If empty → write NONE
 
 FILE PATH: ${file}
+
+HISTORICAL ISSUES (SPECKIT MEMORY):
+${fetchContext(file, '')}
 
 FILE CONTENT:
 ${content}

@@ -64,7 +64,7 @@ export function scanProject(rootPath: string): string[] {
           walk(fullPath);
         }
       } else if (dirent.isFile()) {
-        if (!filePath.match(/\.(js|ts|jsx|tsx)$/)) {
+        if (!fullPath.match(/\.(js|ts|jsx|tsx)$/)) {
           continue;
         }
 

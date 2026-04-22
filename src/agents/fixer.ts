@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { callLLM } from '../llm/client';
+import { fetchContext, storeResolution } from '../utils/speckitBridge';
 
 const OUTPUT_DIR = path.join(process.cwd(), 'outputs');
 const DEFERRED_FILE = path.join(OUTPUT_DIR, 'deferred.json');
@@ -37,6 +38,8 @@ SKIPPED:
 
 ISSUE:
 {description}
+
+{speckitContext}
 
 FILE:
 {code}
@@ -78,7 +81,8 @@ export async function runFixes(): Promise<void> {
   'CONTRACT_MISSING',
   'undefined variable',
   'wrong file path',
-  'import/export mismatch (confirmed)'
+  'import/export mismatch (confirmed)',
+  'RISK'
 ];
 
   let hasUpdates = false;
@@ -87,11 +91,18 @@ export async function runFixes(): Promise<void> {
     if (fixCount > 10) break; // limit per run
     if (issue.status === 'resolved') continue;
     if (issue.description.length < 10) {
-    continue;
+      continue;
     }
-    if (!issue.description.toLowerCase().includes('missing')) {
-    continue;
+    
+    const desc = issue.description.toLowerCase();
+    const isActionable = desc.includes('missing') || desc.includes('undefined') || 
+                         desc.includes('not found') || desc.includes('unhandled') || 
+                         desc.includes('error') || desc.includes('fail');
+                         
+    if (!isActionable) {
+      continue;
     }
+    
     if (!safeTypes.includes(issue.type)) {
       continue;
     }
@@ -108,8 +119,11 @@ export async function runFixes(): Promise<void> {
 
     const code = fs.readFileSync(filePath, 'utf-8');
 
+    const pastContext = fetchContext(issue.file, issue.description);
+
     const prompt = FIX_PROMPT
       .replace('{description}', issue.description)
+      .replace('{speckitContext}', pastContext)
       .replace('{code}', code);
 
     const response = await callLLM(prompt, { temperature: 0 });
@@ -126,6 +140,15 @@ export async function runFixes(): Promise<void> {
             continue;
             }
 if (updatedCodeMatch) {
+      let fixedCode = updatedCodeMatch[1].trim();
+      fixedCode = fixedCode.replace(/^```[\w]*\n/i, '').replace(/\n```$/i, '');
+      
+      fs.writeFileSync(filePath, fixedCode, 'utf-8');
+      
+      // 🔹 INJECTED: Store successful resolution to Speckit Memory
+      storeResolution(issue, fixesAppliedMatch ? fixesAppliedMatch[1].trim() : 'Unknown fix');
+
+      issue.status = 'resolved';
       fixCount++;
       hasUpdates = true;
     }

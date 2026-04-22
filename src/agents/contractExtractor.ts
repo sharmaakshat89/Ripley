@@ -11,13 +11,10 @@ export async function extractContracts(files: string[]): Promise<void> {
   for (const file of filesToRead) {
     try {
       const stat = fs.statSync(file);
-      if (stat.size > 50 * 1024) {
-        continue;
-      }
       const content = fs.readFileSync(file, 'utf-8');
       concatenatedContent += `\n--- File: ${file} ---\n${content}\n`;
     } catch (err) {
-      // Ignore read errors
+      throw err;
     }
   }
 

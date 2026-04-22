@@ -1,0 +1,38 @@
+[
+  {
+    "timestamp": "2026-04-22T05:26:08.117Z",
+    "file": "C:\\Users\\LENOVO\\OneDrive\\Desktop\\my own debugger\\src\\utils\\speckitBridge.ts",
+    "issue": "storeResolution implementation is incomplete (truncated code, missing closing braces)",
+    "fixApplied": "- Added missing closing brace for storeResolution function."
+  },
+  {
+    "timestamp": "2026-04-22T05:26:29.386Z",
+    "file": "C:\\Users\\LENOVO\\OneDrive\\Desktop\\my own debugger\\src\\utils\\speckitBridge.ts",
+    "issue": "Potential runtime error if HISTORY_FILE path does not exist and fs.readFileSync is called",
+    "fixApplied": "- None"
+  },
+  {
+    "timestamp": "2026-04-22T05:27:01.424Z",
+    "file": "C:\\Users\\LENOVO\\OneDrive\\Desktop\\my own debugger\\.opencode\\hooks\\gsd-check-update.js",
+    "issue": "Incomplete code: the file ends abruptly (`if (!fs.existsSync(cacheD`), causing syntax errors.",
+    "fixApplied": "- Added missing closing brace for the cache directory existence check and ensured the script ends cleanly."
+  },
+  {
+    "timestamp": "2026-04-22T05:27:33.237Z",
+    "file": "C:\\Users\\LENOVO\\OneDrive\\Desktop\\my own debugger\\.opencode\\hooks\\gsd-check-update.js",
+    "issue": "Missing error handling for missing directories or files.",
+    "fixApplied": "- Added directory existence checks and creation for cache directory in child process\n- Wrapped file write in try/catch to handle missing directories or write errors\n- Ensured cache directory creation in main script remains"
+  },
+  {
+    "timestamp": "2026-04-22T05:28:10.506Z",
+    "file": "C:\\Users\\LENOVO\\OneDrive\\Desktop\\my own debugger\\.opencode\\hooks\\gsd-context-monitor.js",
+    "issue": "File not found or unreadable → no warning injected",
+    "fixApplied": "- Added try/catch around metrics file read to silently exit if unreadable or corrupted"
+  },
+  {
+    "timestamp": "2026-04-22T05:28:44.112Z",
+    "file": "C:\\Users\\LENOVO\\OneDrive\\Desktop\\my own debugger\\.opencode\\hooks\\gsd-context-monitor.js",
+    "issue": "Stale metrics (older than 60s) ignored, potentially missing critical state",
+    "fixApplied": "- Removed stale metrics check that caused early exit, ensuring critical warnings are still emitted for stale data"
+  }
+]

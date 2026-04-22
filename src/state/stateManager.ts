@@ -15,6 +15,9 @@ export function initState(files: string[]): void {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   }
 
+  const issuesFile = path.join(OUTPUT_DIR, 'issues.json');
+  fs.writeFileSync(issuesFile, JSON.stringify([], null, 2), 'utf-8');
+
   const initialState: ProgressState = {
     currentIndex: 0,
     files,
