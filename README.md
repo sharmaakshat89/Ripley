@@ -1,232 +1,131 @@
-#  Ripley  Memory-Augmented AI Debugger
+# Ripley — Memory-Augmented Debugging System
 
-Ripley is an AI-powered debugging system designed to **understand, analyze, and fix code with deep contextual awareness**.
+Ripley is a deterministic, AI-assisted debugging system that improves code analysis by integrating structured retrieval and persistent memory into the debugging pipeline.
 
-This version integrates a lightweight augmentation layer using `.opencode` and `.speckit`, enabling:
-
-* Persistent memory
-* Semantic retrieval
-* Context enrichment across files
-* Structured debugging workflows
+Unlike autonomous agents, Ripley is designed for **control, transparency, and reliability**.
+It enhances reasoning by improving *what the model sees*, not by delegating control to complex agent loops.
 
 ---
 
-##  Core Philosophy
+## Problem
 
-Ripley is not an autonomous agent.
+Modern AI debugging tools suffer from three core limitations:
 
-It is:
+* Lack of cross-file awareness
+* No memory of past debugging outcomes
+* Context overload leading to hallucinations
 
-* Deterministic
-* Inspectable
-* Pipeline-driven
-
-The added system does not replace Ripley.
-It enhances it.
+These systems rely on stateless prompts, resulting in inconsistent and shallow debugging.
 
 ---
 
-##  System Architecture
+## Solution
 
-### Before
+Ripley introduces a **memory-augmented debugging architecture**:
 
-```
+* Retrieval layer enriches context using past code and fixes
+* Persistent memory enables pattern recognition across sessions
+* Structured pipeline ensures deterministic and inspectable behavior
+
+This transforms debugging from a stateless interaction into a **context-aware reasoning process**.
+
+---
+
+## Architecture
+
+### Baseline
+
 File → Context → Debug → Fix
-```
 
-### After (Current)
+### Ripley (Current)
 
-```
 File
- → Context Builder
- → Retrieval Layer (memory + embeddings)
- → Enriched Context
- → Debug Engine (Ripley core)
- → Fix Output
- → Memory Writeback
-```
+→ Context Builder
+→ Retrieval Layer (semantic + keyword search)
+→ Enriched Context
+→ Debug Engine
+→ Fix Output
+→ Memory Writeback
 
 ---
 
-##  What Was Added
+## Key Components
 
-### 1. Memory Layer (`.speckit/memory`)
+### Core Debug Engine
 
-* Stores past debugging sessions
-* Enables “have I seen this before?” reasoning
-* Supports semantic retrieval
-
----
-
-### 2. Retrieval Engine
-
-* Embedding-based search (OpenRouter supported)
-* Keyword fallback
-* Cross-file awareness
-
----
-
-### 3. Context Enrichment (`.speckit/scripts`)
-
-* Expands local context with relevant global signals
-* Reduces hallucination by grounding responses
-
----
-
-### 4. Hooks & Execution Layer (`.opencode/hooks`)
-
-* Injects retrieval before debugging
-* Writes memory after fixes
-* Keeps Ripley’s flow intact
-
----
-
-### 5. Skills (Optional) (`.opencode/skill`)
-
-* Modular debugging modes
-* Example: async bugs, auth issues, state bugs
-
----
-
-##  Folder Structure
-
-```
-project-root/
-├── ripley/                 # Core debugger (unchanged)
-├── .opencode/
-│   ├── agent/
-│   ├── command/
-│   ├── hooks/
-│   ├── skill/
-│   ├── .speckit/
-│   │   ├── memory/
-│   │   ├── scripts/
-│   │   ├── templates/
-│   │   └── features/
-│   ├── opencode.json
-│   └── settings.json
-```
-
----
-
-##  How It Works
-
-### Step-by-step flow:
-
-1. Input file / bug
-2. Ripley builds base context
-3. Retrieval layer:
-
-   * Finds similar code
-   * Fetches past fixes
-   * Expands context
-4. Ripley debugs using enriched context
-5. Fix is generated
-6. Result is stored in memory
-
----
-
-##  Setup
-
-### 1. LLM (Required)
-
-Use any supported provider:
-
-* OpenRouter (recommended)
-* OpenAI / Anthropic (optional)
-
----
-
-### 2. Embeddings (Optional but Recommended)
-
-Default:
-
-* OpenRouter free embedding model
-
-Upgrade later if needed.
-
----
-
-### 3. Install
-
-```bash
-git clone <repo>
-cd project
-npm install  # or pip install -r requirements.txt
-```
-
----
-
-### 4. Run
-
-```bash
-npm run debug
-# or
-python ripley.py
-```
-
----
-
-##  Modes
-
-* Standard Debug → default Ripley behavior
-* Memory-Augmented Debug → retrieval enabled
-* Skill-Based Debug → optional specialized flows
-
----
-
-##  Guardrails
-
-* Ripley remains the primary system
-* No multi-agent loops
+* Deterministic pipeline
+* Controlled execution flow
 * No hidden orchestration
-* All enhancements are modular and optional
+
+### Retrieval Layer
+
+* Embedding-based semantic search
+* Keyword fallback for robustness
+* Cross-file context expansion
+
+### Memory System
+
+* Stores debugging sessions and fixes
+* Enables reuse of prior solutions
+* Improves reasoning over time
+
+### Extension Layer (.opencode)
+
+* Hook-based lifecycle control
+* Modular command system
+* Optional skill-based debugging modes
 
 ---
 
-##  What This Improves
+## Design Principles
 
-| Capability           | Before | After |
-| -------------------- | ------ | ----- |
-| Cross-file awareness | NO     | YES   |
-| Past bug recall      | NO     | YES   |
-| Context quality      | Medium | High  |
-| Hallucination        | Higher | Lower |
+* Determinism over autonomy
+* Augmentation over replacement
+* Simplicity over orchestration
+* Context quality over model size
 
 ---
 
-##  Design Insight
+## Technical Highlights
 
-This system is not an “AI agent”.
-
-It is a:
-
-> **Memory-augmented debugging engine**
-
-The goal is not autonomy.
-The goal is **better thinking with better context**.
+* Integrated retrieval into debugging pipeline without increasing system complexity
+* Designed a modular hook system for safe extensibility
+* Implemented memory writeback for iterative improvement
+* Enabled semantic code understanding using embedding models
 
 ---
 
-##  Future Improvements
+## Impact
 
-* Better chunking strategies
-* Smarter retrieval ranking
-* Debug pattern learning
-* Lightweight evaluation layer
+* Improved debugging accuracy through better context selection
+* Reduced hallucination by grounding responses in retrieved data
+* Enabled reuse of past debugging knowledge
+* Maintained full control over execution flow
 
 ---
 
-##  Summary
+## Setup
 
-Ripley now:
+Requirements:
 
-* Remembers
-* Retrieves
-* Reasons with context
+* Node.js or Python runtime
+* LLM access (OpenRouter or equivalent)
 
-Without losing:
+Optional:
 
-* Control
-* Simplicity
-* Determinism
+* Embedding model for semantic retrieval
+
+Run:
+
+```bash
+npm install
+npm run debug
+```
+
+---
+
+## Summary
+
+Ripley is not an autonomous coding agent.
+
+It is a **structured, memory-aware debugging system** that enhances reasoning by improving context, while preserving control and transparency.
