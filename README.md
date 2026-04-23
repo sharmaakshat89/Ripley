@@ -1,90 +1,232 @@
-# Ripley
+#  Ripley  Memory-Augmented AI Debugger
 
-Ripley is a codebase debugger that doesn’t try to be clever. It reads a project the way a cautious engineer would: file by file, slowly building an understanding of what depends on what, what each piece promises to do, and where those promises quietly break.
+Ripley is an AI-powered debugging system designed to **understand, analyze, and fix code with deep contextual awareness**.
 
-It was built out of a very practical frustration. When you use low capability models or “vibe code” quickly, things don’t fail loudly. They drift. A route stops matching a controller, a function returns something slightly different than expected, an import silently points to the wrong place. The system still runs, but the structure underneath starts to rot. Ripley is meant to catch that drift before it becomes a full collapse.
+This version integrates a lightweight augmentation layer using `.opencode` and `.speckit`, enabling:
 
-The name comes from Ellen Ripley in *Aliens*. Not because this project is heroic, but because of how she operates. She does not assume things are safe. She does not trust the surface. She pays attention to small inconsistencies and acts before they escalate. This tool is designed with the same mindset. It assumes something is wrong and tries to prove it carefully, without breaking anything else in the process.
-
----
-
-## What Ripley Does
-
-Ripley walks through your codebase in a controlled loop.
-
-It scans every file that actually matters. Then for each file, it extracts a minimal structural understanding:
-
-Dependencies
-What the file relies on
-
-Provides
-What it exposes to the rest of the system
-
-Contracts
-What shape of data or behavior it promises
-
-Risks
-Places where those contracts might already be breaking
-
-Anything it cannot confidently determine is left alone rather than guessed.
-
-This information is written incrementally into a system level debug file, so the tool never loses context as it moves through the project.
-
-Once enough context is built, Ripley runs integrity checks across files. It looks for mismatches between routes and controllers, missing exports, broken assumptions about data shape, and other structural inconsistencies.
-
-Only after that does it attempt fixes. And even then, it is intentionally conservative. It avoids changing function signatures, API shapes, or execution flow unless a mismatch is clearly confirmed. The goal is not to rewrite your code. The goal is to repair it without introducing new damage.
+* Persistent memory
+* Semantic retrieval
+* Context enrichment across files
+* Structured debugging workflows
 
 ---
 
-## How It Works
+##  Core Philosophy
 
-The system runs in three stages.
+Ripley is not an autonomous agent.
 
-First, it builds context.
-Each file is analyzed and added to a growing internal map of the system.
+It is:
 
-Second, it validates that context.
-Cross file checks identify where contracts do not line up.
+* Deterministic
+* Inspectable
+* Pipeline-driven
 
-Third, it applies fixes.
-Only issues that are concrete and low risk are modified.
-
-If something is uncertain, it is recorded and deferred rather than forced.
+The added system does not replace Ripley.
+It enhances it.
 
 ---
 
-## Why It Exists
+##  System Architecture
 
-Most debugging tools either operate at runtime or focus on syntax level issues. They miss the layer where real problems often live: the relationships between files.
+### Before
 
-Ripley focuses on that layer.
+```
+File → Context → Debug → Fix
+```
 
-It treats your codebase as a system of agreements. When those agreements drift out of sync, even slightly, bugs appear in ways that are hard to trace. Ripley’s job is to surface those mismatches early and, when safe, correct them.
+### After (Current)
 
----
-
-## What It Is Not
-
-It is not a code generator.
-It is not a refactoring engine.
-It is not trying to be creative.
-
-It is deliberately narrow in scope. It analyzes, validates, and cautiously fixes.
-
----
-
-## Current State
-
-Ripley is designed to work incrementally and safely. It favors correctness over speed and clarity over cleverness. The system is still evolving, especially around how fixes are selected and applied, but the core idea remains stable: understand first, act second.
+```
+File
+ → Context Builder
+ → Retrieval Layer (memory + embeddings)
+ → Enriched Context
+ → Debug Engine (Ripley core)
+ → Fix Output
+ → Memory Writeback
+```
 
 ---
 
-## Using Ripley
+##  What Was Added
 
-Run it inside any project directory. It will scan the codebase, build its internal context, and begin analysis in batches. As it progresses, it updates its state and debug logs so the process can be resumed without losing information.
+### 1. Memory Layer (`.speckit/memory`)
 
-Fixes are applied only after sufficient context is gathered.
+* Stores past debugging sessions
+* Enables “have I seen this before?” reasoning
+* Supports semantic retrieval
 
 ---
 
-Ripley is built on the assumption that most systems do not fail because of one obvious error. They fail because small inconsistencies accumulate unnoticed. This tool exists to notice them.
+### 2. Retrieval Engine
+
+* Embedding-based search (OpenRouter supported)
+* Keyword fallback
+* Cross-file awareness
+
+---
+
+### 3. Context Enrichment (`.speckit/scripts`)
+
+* Expands local context with relevant global signals
+* Reduces hallucination by grounding responses
+
+---
+
+### 4. Hooks & Execution Layer (`.opencode/hooks`)
+
+* Injects retrieval before debugging
+* Writes memory after fixes
+* Keeps Ripley’s flow intact
+
+---
+
+### 5. Skills (Optional) (`.opencode/skill`)
+
+* Modular debugging modes
+* Example: async bugs, auth issues, state bugs
+
+---
+
+##  Folder Structure
+
+```
+project-root/
+├── ripley/                 # Core debugger (unchanged)
+├── .opencode/
+│   ├── agent/
+│   ├── command/
+│   ├── hooks/
+│   ├── skill/
+│   ├── .speckit/
+│   │   ├── memory/
+│   │   ├── scripts/
+│   │   ├── templates/
+│   │   └── features/
+│   ├── opencode.json
+│   └── settings.json
+```
+
+---
+
+##  How It Works
+
+### Step-by-step flow:
+
+1. Input file / bug
+2. Ripley builds base context
+3. Retrieval layer:
+
+   * Finds similar code
+   * Fetches past fixes
+   * Expands context
+4. Ripley debugs using enriched context
+5. Fix is generated
+6. Result is stored in memory
+
+---
+
+##  Setup
+
+### 1. LLM (Required)
+
+Use any supported provider:
+
+* OpenRouter (recommended)
+* OpenAI / Anthropic (optional)
+
+---
+
+### 2. Embeddings (Optional but Recommended)
+
+Default:
+
+* OpenRouter free embedding model
+
+Upgrade later if needed.
+
+---
+
+### 3. Install
+
+```bash
+git clone <repo>
+cd project
+npm install  # or pip install -r requirements.txt
+```
+
+---
+
+### 4. Run
+
+```bash
+npm run debug
+# or
+python ripley.py
+```
+
+---
+
+##  Modes
+
+* Standard Debug → default Ripley behavior
+* Memory-Augmented Debug → retrieval enabled
+* Skill-Based Debug → optional specialized flows
+
+---
+
+##  Guardrails
+
+* Ripley remains the primary system
+* No multi-agent loops
+* No hidden orchestration
+* All enhancements are modular and optional
+
+---
+
+##  What This Improves
+
+| Capability           | Before | After |
+| -------------------- | ------ | ----- |
+| Cross-file awareness | NO     | YES   |
+| Past bug recall      | NO     | YES   |
+| Context quality      | Medium | High  |
+| Hallucination        | Higher | Lower |
+
+---
+
+##  Design Insight
+
+This system is not an “AI agent”.
+
+It is a:
+
+> **Memory-augmented debugging engine**
+
+The goal is not autonomy.
+The goal is **better thinking with better context**.
+
+---
+
+##  Future Improvements
+
+* Better chunking strategies
+* Smarter retrieval ranking
+* Debug pattern learning
+* Lightweight evaluation layer
+
+---
+
+##  Summary
+
+Ripley now:
+
+* Remembers
+* Retrieves
+* Reasons with context
+
+Without losing:
+
+* Control
+* Simplicity
+* Determinism
